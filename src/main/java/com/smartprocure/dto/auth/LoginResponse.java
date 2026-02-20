@@ -5,13 +5,23 @@ public class LoginResponse {
     private String tokenType = "Bearer";
     private String accessToken;
     private long expiresInSeconds;
+    private String role;
 
     public LoginResponse() {
     }
 
-    public LoginResponse(String accessToken, long expiresInSeconds) {
+    public LoginResponse(String accessToken, long expiresInSeconds, String role) {
         this.accessToken = accessToken;
         this.expiresInSeconds = expiresInSeconds;
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getTokenType() {
@@ -38,4 +48,3 @@ public class LoginResponse {
         this.expiresInSeconds = expiresInSeconds;
     }
 }
-

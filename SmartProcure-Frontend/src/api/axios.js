@@ -1,0 +1,37 @@
+import axios from 'axios';
+
+const api = axios.create({
+    baseURL: 'http://localhost:8081/api',
+});
+
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+api.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            // If the user isn't already on the login page or register page, redirect them.
+            if (!window.location.hash.includes('#/login') && !window.location.hash.includes('#/register')) {
+                window.location.href = '#/login';
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+
+export default api;

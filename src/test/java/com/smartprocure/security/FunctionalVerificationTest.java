@@ -105,16 +105,16 @@ public class FunctionalVerificationTest {
                 mockMvc.perform(get("/api/admin/users")
                                 .header("Authorization", "Bearer " + accessToken))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$").isArray())
-                                .andExpect(jsonPath("$[0].email").exists());
+                                .andExpect(jsonPath("$.content").isArray())
+                                .andExpect(jsonPath("$.content[0].email").exists());
 
                 // 3. List Vendors
                 mockMvc.perform(get("/api/admin/vendors")
                                 .header("Authorization", "Bearer " + accessToken))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$").isArray())
-                                .andExpect(jsonPath("$[0].email").exists())
-                                .andExpect(jsonPath("$[0].vendor").exists())
-                                .andExpect(jsonPath("$[0].vendor.companyName").exists());
+                                .andExpect(jsonPath("$.content").isArray())
+                                .andExpect(jsonPath("$.content[0].email").exists())
+                                .andExpect(jsonPath("$.content[0].vendor").exists())
+                                .andExpect(jsonPath("$.content[0].vendor.companyName").exists());
         }
 }

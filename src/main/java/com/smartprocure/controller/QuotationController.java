@@ -40,7 +40,7 @@ public class QuotationController {
     @GetMapping("/request/{requestId}")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
     public ResponseEntity<List<QuotationDTO>> getQuotationsForRequest(
-            @PathVariable Long requestId,
+            @PathVariable("requestId") Long requestId,
             @AuthenticationPrincipal SmartProcurePrincipal principal) {
         return ResponseEntity.ok(quotationService.getQuotationsForRequest(requestId, getUserFromPrincipal(principal)));
     }
@@ -55,7 +55,7 @@ public class QuotationController {
     @PostMapping("/{id}/accept")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<QuotationDTO> acceptQuotation(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @AuthenticationPrincipal SmartProcurePrincipal principal) {
         return ResponseEntity.ok(quotationService.acceptQuotation(id, getUserFromPrincipal(principal)));
     }
@@ -63,7 +63,7 @@ public class QuotationController {
     @PostMapping("/{id}/reject")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<QuotationDTO> rejectQuotation(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @AuthenticationPrincipal SmartProcurePrincipal principal) {
         return ResponseEntity.ok(quotationService.rejectQuotation(id, getUserFromPrincipal(principal)));
     }

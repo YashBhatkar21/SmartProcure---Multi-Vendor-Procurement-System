@@ -20,7 +20,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * ProcurementRequests as customer.
  */
 @Entity
-@Table(name = "users", uniqueConstraints = @UniqueConstraint(name = "uk_users_email", columnNames = "email"), indexes = {})
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(name = "uk_users_email", columnNames = "email"), indexes = {
+        @jakarta.persistence.Index(name = "idx_users_email", columnList = "email"),
+        @jakarta.persistence.Index(name = "idx_users_full_name", columnList = "full_name"),
+        @jakarta.persistence.Index(name = "idx_users_role_id", columnList = "role_id")
+})
 @com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class User extends BaseEntity {
 
@@ -34,7 +38,7 @@ public class User extends BaseEntity {
     @Column(name = "full_name", nullable = false, length = 255)
     private String fullName;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 

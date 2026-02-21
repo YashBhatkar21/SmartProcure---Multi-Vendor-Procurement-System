@@ -6,6 +6,7 @@ import com.smartprocure.entity.*;
 import com.smartprocure.repository.ProcurementRequestRepository;
 import com.smartprocure.repository.QuotationRepository;
 import com.smartprocure.repository.VendorRepository;
+import com.smartprocure.service.OrderService;
 import com.smartprocure.service.QuotationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,6 +23,7 @@ public class QuotationServiceImpl implements QuotationService {
     private final QuotationRepository quotationRepository;
     private final ProcurementRequestRepository procurementRequestRepository;
     private final VendorRepository vendorRepository;
+    private final OrderService orderService;
 
     @Override
     @Transactional
@@ -121,7 +123,12 @@ public class QuotationServiceImpl implements QuotationService {
             }
         }
 
-        return mapToDTO(quotationRepository.save(quotation));
+        Quotation savedQuotation = quotationRepository.save(quotation);
+
+        // Auto-generate the Purchase Order
+        orderService.createOrder(savedQuotation.getId());
+
+        return mapToDTO(savedQuotation);
     }
 
     @Override

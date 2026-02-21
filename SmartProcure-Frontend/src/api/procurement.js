@@ -1,7 +1,7 @@
 import api from './axios';
 
-export const getMyRequests = () => {
-    return api.get('/procurement-requests/me');
+export const getMyRequests = (params = {}) => {
+    return api.get('/procurement-requests/me', { params });
 };
 
 export const createRequest = (requestData) => {
@@ -20,8 +20,8 @@ export const rejectQuotation = (quotationId) => {
     return api.post(`/quotations/${quotationId}/reject`);
 };
 
-export const getAvailableRequests = () => {
-    return api.get('/procurement-requests/available');
+export const getAvailableRequests = (params = {}) => {
+    return api.get('/procurement-requests/available', { params });
 };
 
 export const getMyQuotations = () => {
@@ -30,4 +30,16 @@ export const getMyQuotations = () => {
 
 export const submitQuotation = (quotationData) => {
     return api.post('/quotations', quotationData);
+};
+
+export const getCustomerOrders = (params = {}) => {
+    return api.get('/orders/customer', { params });
+};
+
+export const getVendorOrders = (params = {}) => {
+    return api.get('/orders/vendor', { params });
+};
+
+export const updateOrderStatus = (orderId, status) => {
+    return api.patch(`/orders/${orderId}/status?status=${status}`);
 };

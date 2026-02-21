@@ -19,14 +19,11 @@ import java.util.List;
  * Order generated from an approved quotation. One-to-Many with Payment.
  */
 @Entity
-@Table(
-    name = "orders",
-    uniqueConstraints = @UniqueConstraint(name = "uk_orders_order_number", columnNames = "order_number"),
-    indexes = {
+@Table(name = "orders", uniqueConstraints = @UniqueConstraint(name = "uk_orders_order_number", columnNames = "order_number"), indexes = {
         @jakarta.persistence.Index(name = "idx_orders_quotation_id", columnList = "quotation_id"),
-        @jakarta.persistence.Index(name = "idx_orders_status", columnList = "status")
-    }
-)
+        @jakarta.persistence.Index(name = "idx_orders_status", columnList = "status"),
+        @jakarta.persistence.Index(name = "idx_orders_order_number", columnList = "order_number")
+})
 public class Order extends BaseEntity {
 
     @Column(name = "order_number", nullable = false, unique = true, length = 50)

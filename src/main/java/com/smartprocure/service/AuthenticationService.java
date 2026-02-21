@@ -9,6 +9,8 @@ import com.smartprocure.entity.User;
 import com.smartprocure.repository.RoleRepository;
 import com.smartprocure.repository.TokenRepository;
 import com.smartprocure.repository.UserRepository;
+import com.smartprocure.repository.VendorRepository;
+import com.smartprocure.entity.Vendor;
 import com.smartprocure.security.JwtService;
 import com.smartprocure.security.SmartProcurePrincipal;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +20,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
+
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final RoleRepository roleRepository;
+    private final VendorRepository vendorRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -46,6 +53,16 @@ public class AuthenticationService {
 
         User savedUser = userRepository.save(user);
 
+        if (roleName == Role.RoleName.VENDOR) {
+            Vendor vendor = new Vendor();
+            vendor.setCompanyName(request.getFullName() + "'s Company");
+            vendor.setContactPhone("Pending");
+            vendor.setAddress("Pending");
+            vendor.setUser(savedUser);
+            vendorRepository.save(vendor);
+            log.info("Provisioning Vendor profile for user: {}", savedUser.getEmail());
+        }
+
         // Create Principal for token generation
         SmartProcurePrincipal principal = SmartProcurePrincipal.create(savedUser);
         String jwtToken = jwtService.generateAccessToken(principal);
@@ -57,6 +74,7 @@ public class AuthenticationService {
     }
 
     public LoginResponse authenticate(LoginRequest request) {
+        log.info("Authentication attempt for user: {}", request.getEmail());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
@@ -69,6 +87,8 @@ public class AuthenticationService {
 
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
+
+        log.info("User authenticated successfully: {}", request.getEmail());
 
         long expiresInSeconds = accessTokenExpirationMinutes * 60;
         return new LoginResponse(jwtToken, expiresInSeconds, user.getRole().getName().name());

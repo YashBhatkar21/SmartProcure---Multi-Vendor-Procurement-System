@@ -22,7 +22,8 @@ import java.util.List;
 @Table(name = "procurement_requests", indexes = {
         @jakarta.persistence.Index(name = "idx_procurement_requests_status", columnList = "status"),
         @jakarta.persistence.Index(name = "idx_procurement_requests_customer_id", columnList = "customer_id"),
-        @jakarta.persistence.Index(name = "idx_procurement_requests_created_at", columnList = "created_at")
+        @jakarta.persistence.Index(name = "idx_procurement_requests_created_at", columnList = "created_at"),
+        @jakarta.persistence.Index(name = "idx_procurement_requests_title", columnList = "title")
 })
 @com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class ProcurementRequest extends BaseEntity {

@@ -16,6 +16,11 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -36,6 +41,9 @@ class ProcurementRequestServiceImplTest {
     void setUp() {
         customer = new User();
         customer.setId(1L);
+        com.smartprocure.entity.Role role = new com.smartprocure.entity.Role();
+        role.setName(com.smartprocure.entity.Role.RoleName.CUSTOMER);
+        customer.setRole(role);
         customer.setEmail("customer@test.com");
 
         createRequest = new CreateProcurementRequestRequest();
@@ -72,13 +80,19 @@ class ProcurementRequestServiceImplTest {
         request.setTitle("Test Request");
         request.setCustomer(customer);
 
-        when(procurementRequestRepository.findByCustomerId(customer.getId())).thenReturn(List.of(request));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ProcurementRequest> page = new PageImpl<>(List.of(request));
 
-        List<ProcurementRequestDTO> results = procurementRequestService.getMyRequests(customer);
+        // It's using JpaSpecificationExecutor now. So we must mock
+        // findall(Specification, Pageable)
+        when(procurementRequestRepository.findAll(any(org.springframework.data.jpa.domain.Specification.class),
+                eq(pageable))).thenReturn(page);
+
+        Page<ProcurementRequestDTO> results = procurementRequestService.getMyRequests(customer, null, null, pageable);
 
         assertNotNull(results);
         assertFalse(results.isEmpty());
-        assertEquals(1, results.size());
-        assertEquals(request.getTitle(), results.get(0).getTitle());
+        assertEquals(1, results.getTotalElements());
+        assertEquals(request.getTitle(), results.getContent().get(0).getTitle());
     }
 }

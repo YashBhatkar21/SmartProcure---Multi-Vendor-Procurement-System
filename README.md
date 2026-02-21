@@ -1,40 +1,229 @@
-# SmartProcure – Multi-Vendor Procurement System
+🚀 SmartProcure – Full Stack B2B Procurement System
 
-SmartProcure is a B2B procurement platform backend built with **Java 17**, **Spring Boot**, **MySQL**, **Spring Security**, **JWT**, **Swagger/OpenAPI**, and **JPA/Hibernate**.
+SmartProcure is a full-stack B2B procurement management platform designed for enterprise workflows.
 
-This codebase is structured as a **modular monolith** and follows a strict layered architecture:
+It enables:
 
-- `controller` – HTTP/API layer (no business logic)
-- `service` – business logic and workflows
-  - `service.impl` – service implementations
-- `repository` – database access
-- `entity` – JPA entities and enums
-- `dto` – request/response DTOs (no entity exposure)
-- `config` – cross-cutting configuration (Swagger, CORS, etc.)
-- `security` – Spring Security, JWT filters, handlers
-- `exception` – custom exceptions and global exception handler
-- `util` – helpers, mappers, API response wrappers
+Customers to create procurement requests
 
-## Running locally
+Vendors to submit quotations
 
-1. Create a MySQL database (e.g. `smartprocure_db`) and a user with appropriate privileges.
-2. Update `spring.datasource.username` and `spring.datasource.password` in `application.yml`.
-3. Ensure Java 17 and Maven are installed.
-4. From the project root, run:
+Admins to manage users and vendors
 
-```bash
+The system is built with a secure JWT-based authentication system and follows a clean layered backend architecture.
+
+🏗 Architecture Overview
+
+SmartProcure follows a Modular Monolith architecture with strict separation of concerns:
+
+controller → service → repository → entity
+Backend Structure
+
+controller – REST API layer (no business logic)
+
+service – business rules & workflows
+
+repository – JPA data access
+
+entity – database models
+
+dto – request/response models (no entity exposure)
+
+security – JWT, filters, Spring Security config
+
+exception – centralized error handling
+
+config – Swagger, CORS, and application configuration
+
+🛠 Tech Stack
+Backend
+
+Java 17
+
+Spring Boot
+
+Spring Security
+
+JWT Authentication
+
+Spring Data JPA (Hibernate)
+
+MySQL
+
+Swagger / OpenAPI
+
+SLF4J / Logback
+
+Frontend
+
+React (Vite)
+
+Axios
+
+Role-based UI rendering
+
+Global JWT interceptor
+
+CoreUI-based dashboard layout (customized)
+
+📂 Project Structure
+SmartProcure/
+│
+├── src/               # Spring Boot application
+│
+├── SmartProcure-Frontend/ # React frontend (Port 3000)
+│
+└── README.md
+🗄 Database
+
+Database name:
+
+smartprocure_db
+
+Core tables:
+
+roles
+
+users
+
+vendors
+
+procurement_requests
+
+quotations
+
+orders
+
+payments
+
+Relationships are enforced via foreign keys and indexed where necessary.
+
+🔐 Security
+
+Stateless JWT Authentication
+
+Role-Based Access Control (ADMIN / CUSTOMER / VENDOR)
+
+Global 401 interceptor on frontend
+
+Password hashing using BCrypt
+
+No entity exposure (DTO-based API responses)
+
+🚀 Running the Project Locally
+1️⃣ Database Setup
+
+Create database:
+
+CREATE DATABASE smartprocure_db;
+
+Update credentials in:
+
+backend/src/main/resources/application.yml
+
+Example:
+
+spring:
+datasource:
+url: jdbc:mysql://localhost:3306/smartprocure_db
+username: root
+password: yourpassword
+2️⃣ Run Backend (Port 8081)
+
+From backend folder:
+
 mvn spring-boot:run
-```
 
-Then open `http://localhost:8080/api/health` to verify the service is running.
+Backend will start at:
 
-Swagger UI will be available at `http://localhost:8080/swagger-ui.html` once the security module is configured.
+http://localhost:8081
 
-## Day 2 – Database & entities
+Health Check:
 
-- **Schema**: Tables `roles`, `users`, `vendors`, `procurement_requests`, `quotations`, `orders`, `payments` with FKs, unique constraints, and indexes.
-- **Entities**: JPA entities with `BaseEntity` (id, createdAt, updatedAt), enums (`RequestStatus`, `QuotationStatus`, `OrderStatus`, `PaymentStatus`), LAZY relationships, and `@Enumerated(STRING)`.
-- **Repositories**: `RoleRepository`, `UserRepository`, `VendorRepository`, `ProcurementRequestRepository`, `QuotationRepository`, `OrderRepository`, `PaymentRepository` with the required finder methods.
-- **Seed data**: `SeedDataRunner` inserts 3 roles, 1 admin, 1 customer, 1 vendor user, and 1 vendor profile when the DB is empty (password: `password`).
-- **SQL validation**: Example JOIN queries are in `src/main/resources/schema-validation-queries.sql` for verifying quotations by request, order with vendor/customer, and payments by order.
+http://localhost:8081/api/health
 
+Swagger UI:
+
+http://localhost:8081/swagger-ui.html
+3️⃣ Run Frontend (Port 3000)
+
+From frontend folder:
+
+npm install
+npm start
+
+Frontend will run at:
+
+http://localhost:3000
+🔄 Authentication Flow
+
+User logs in via /api/auth/login
+
+Backend validates credentials
+
+JWT token is returned
+
+Frontend stores token in localStorage
+
+Axios attaches token to every request
+
+Global interceptor handles 401 (auto logout)
+
+📊 Implemented Features
+Backend
+
+User Registration & Login
+
+Role-Based Access Control
+
+Procurement Request Creation
+
+Vendor Dashboard
+
+Admin User Management
+
+DTO-based responses
+
+Global Exception Handling
+
+Swagger Documentation
+
+Pagination & Filtering (where applicable)
+
+Frontend
+
+Role-based dashboards
+
+Secure routing
+
+API integration via Axios
+
+Global 401 handling
+
+Clean enterprise UI layout
+
+Login & Registration pages
+
+Dynamic sidebar rendering
+
+🧪 Test Accounts (Seed Data)
+Role	Email	Password
+ADMIN	admin@smartprocure.com
+password
+CUSTOMER	customer@smartprocure.com
+password
+VENDOR	vendor@smartprocure.com
+password
+🎯 Future Improvements
+
+Refresh Token implementation
+
+Payment workflow expansion
+
+Dashboard analytics
+
+Dockerization
+
+CI/CD pipeline
+
+Multi-tenant support

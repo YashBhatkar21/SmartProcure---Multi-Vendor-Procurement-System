@@ -123,7 +123,7 @@ const CustomerDashboard = () => {
         <>
             <CRow>
                 <CCol xs={12}>
-                    <CCard className="mb-4">
+                    <CCard className="mb-4 hover-lift shadow-sm border-0">
                         <CCardHeader className="d-flex justify-content-between align-items-center">
                             <strong>My Procurement Requests</strong>
                             <div className="d-flex w-50 justify-content-end gap-2">
@@ -179,7 +179,7 @@ const CustomerDashboard = () => {
 
             <CRow>
                 <CCol xs={12}>
-                    <CCard className="mb-4">
+                    <CCard className="mb-4 hover-lift shadow-sm border-0">
                         <CCardHeader className="d-flex justify-content-between align-items-center">
                             <strong>My Active Purchase Orders</strong>
                             <div className="d-flex w-50 justify-content-end gap-2">

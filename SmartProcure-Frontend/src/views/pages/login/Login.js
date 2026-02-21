@@ -46,74 +46,62 @@ const Login = () => {
   }
 
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
+    <div className="auth-bg min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
-          <CCol md={8}>
-            <CCardGroup>
-              <CCard className="p-4">
-                <CCardBody>
-                  <CForm onSubmit={handleLogin}>
-                    <h1>Login</h1>
-                    <p className="text-body-secondary">Sign In to your account</p>
-                    {error && <CAlert color="danger">{error}</CAlert>}
-                    <CInputGroup className="mb-3">
-                      <CInputGroupText>
-                        <CIcon icon={cilUser} />
-                      </CInputGroupText>
-                      <CFormInput
-                        type="email"
-                        placeholder="Email"
-                        autoComplete="username"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
-                    </CInputGroup>
-                    <CInputGroup className="mb-4">
-                      <CInputGroupText>
-                        <CIcon icon={cilLockLocked} />
-                      </CInputGroupText>
-                      <CFormInput
-                        type="password"
-                        placeholder="Password"
-                        autoComplete="current-password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
-                    </CInputGroup>
-                    <CRow>
-                      <CCol xs={6}>
-                        <CButton color="primary" className="px-4" type="submit" disabled={loading}>
-                          {loading ? <CSpinner size="sm" /> : 'Login'}
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
-                          Forgot password?
-                        </CButton>
-                      </CCol>
-                    </CRow>
-                  </CForm>
-                </CCardBody>
-              </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Register as a Customer or Vendor to start using SmartProcure.
-                    </p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
-                      </CButton>
-                    </Link>
+          <CCol md={6} lg={5}>
+            <CCard className="p-4 glass-card border-0">
+              <CCardBody>
+                <CForm onSubmit={handleLogin}>
+                  <div className="text-center mb-4">
+                    <h1 className="fw-bold" style={{ color: 'var(--primary-indigo)' }}>SmartProcure</h1>
+                    <p className="text-body-secondary mt-2">Sign in to your account</p>
                   </div>
-                </CCardBody>
-              </CCard>
-            </CCardGroup>
+                  {error && <CAlert color="danger">{error}</CAlert>}
+                  <CInputGroup className="mb-3">
+                    <CInputGroupText className="bg-white">
+                      <CIcon icon={cilUser} />
+                    </CInputGroupText>
+                    <CFormInput
+                      type="email"
+                      placeholder="Email"
+                      autoComplete="username"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="border-start-0 ps-0"
+                    />
+                  </CInputGroup>
+                  <CInputGroup className="mb-4">
+                    <CInputGroupText className="bg-white">
+                      <CIcon icon={cilLockLocked} />
+                    </CInputGroupText>
+                    <CFormInput
+                      type="password"
+                      placeholder="Password"
+                      autoComplete="current-password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="border-start-0 ps-0"
+                    />
+                  </CInputGroup>
+                  <div className="d-grid mb-3">
+                    <CButton className="btn-premium" type="submit" disabled={loading}>
+                      {loading ? <CSpinner size="sm" /> : 'Log In'}
+                    </CButton>
+                  </div>
+                  <div className="text-center text-muted">
+                    <small>
+                      Don't have an account?{' '}
+                      <Link to="/register" style={{ color: 'var(--primary-indigo)' }} className="text-decoration-none fw-bold">
+                        Register Now
+                      </Link>
+                    </small>
+                  </div>
+                </CForm>
+              </CCardBody>
+            </CCard>
           </CCol>
         </CRow>
       </CContainer>

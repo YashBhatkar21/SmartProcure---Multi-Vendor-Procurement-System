@@ -38,7 +38,7 @@ const AdminDashboard = () => {
     return (
         <CRow>
             <CCol xs={12} sm={6} lg={3}>
-                <div onClick={() => navigate('/admin/vendors')} style={{ cursor: 'pointer' }}>
+                <div onClick={() => navigate('/admin/vendors')} style={{ cursor: 'pointer' }} className="hover-lift h-100">
                     <CWidgetStatsC
                         className="mb-3"
                         icon={<CIcon icon={cilPeople} height={36} />}
@@ -52,7 +52,7 @@ const AdminDashboard = () => {
                 </div>
             </CCol>
             <CCol xs={12} sm={6} lg={3}>
-                <div onClick={() => navigate('/admin/requests')} style={{ cursor: 'pointer' }}>
+                <div onClick={() => navigate('/admin/requests')} style={{ cursor: 'pointer' }} className="hover-lift h-100">
                     <CWidgetStatsC
                         className="mb-3"
                         icon={<CIcon icon={cilList} height={36} />}
@@ -66,7 +66,7 @@ const AdminDashboard = () => {
                 </div>
             </CCol>
             <CCol xs={12} sm={6} lg={3}>
-                <div onClick={() => navigate('/admin/orders')} style={{ cursor: 'pointer' }}>
+                <div onClick={() => navigate('/admin/orders')} style={{ cursor: 'pointer' }} className="hover-lift h-100">
                     <CWidgetStatsC
                         className="mb-3"
                         icon={<CIcon icon={cilCart} height={36} />}
@@ -80,7 +80,7 @@ const AdminDashboard = () => {
                 </div>
             </CCol>
             <CCol xs={12} sm={6} lg={3}>
-                <div style={{ cursor: 'pointer' }}>
+                <div style={{ cursor: 'pointer' }} className="hover-lift h-100">
                     <CWidgetStatsC
                         className="mb-3"
                         icon={<CIcon icon={cilMoney} height={36} />}

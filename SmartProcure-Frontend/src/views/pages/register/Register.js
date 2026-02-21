@@ -65,21 +65,23 @@ const Register = () => {
   }
 
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
+    <div className="auth-bg min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
-          <CCol md={9} lg={7} xl={6}>
-            <CCard className="mx-4">
-              <CCardBody className="p-4">
+          <CCol md={8} lg={6} xl={5}>
+            <CCard className="p-4 glass-card border-0">
+              <CCardBody>
                 <CForm onSubmit={handleRegister}>
-                  <h1>Register</h1>
-                  <p className="text-body-secondary">Create your account</p>
+                  <div className="text-center mb-4">
+                    <h1 className="fw-bold" style={{ color: 'var(--primary-indigo)' }}>Register</h1>
+                    <p className="text-body-secondary mt-2">Create your account</p>
+                  </div>
 
                   {error && <CAlert color="danger">{error}</CAlert>}
                   {success && <CAlert color="success">{success}</CAlert>}
 
                   <CInputGroup className="mb-3">
-                    <CInputGroupText>
+                    <CInputGroupText className="bg-white">
                       <CIcon icon={cilUser} />
                     </CInputGroupText>
                     <CFormInput
@@ -88,11 +90,12 @@ const Register = () => {
                       value={formData.fullName}
                       onChange={handleChange}
                       required
+                      className="border-start-0 ps-0"
                     />
                   </CInputGroup>
 
                   <CInputGroup className="mb-3">
-                    <CInputGroupText>@</CInputGroupText>
+                    <CInputGroupText className="bg-white">@</CInputGroupText>
                     <CFormInput
                       type="email"
                       placeholder="Email"
@@ -101,11 +104,12 @@ const Register = () => {
                       value={formData.email}
                       onChange={handleChange}
                       required
+                      className="border-start-0 ps-0"
                     />
                   </CInputGroup>
 
                   <CInputGroup className="mb-3">
-                    <CInputGroupText>
+                    <CInputGroupText className="bg-white">
                       <CIcon icon={cilUser} />
                     </CInputGroupText>
                     <CFormSelect
@@ -113,6 +117,7 @@ const Register = () => {
                       value={formData.role}
                       onChange={handleChange}
                       required
+                      className="border-start-0 ps-0"
                     >
                       <option value="CUSTOMER">Customer</option>
                       <option value="VENDOR">Vendor</option>
@@ -120,7 +125,7 @@ const Register = () => {
                   </CInputGroup>
 
                   <CInputGroup className="mb-3">
-                    <CInputGroupText>
+                    <CInputGroupText className="bg-white">
                       <CIcon icon={cilLockLocked} />
                     </CInputGroupText>
                     <CFormInput
@@ -131,11 +136,12 @@ const Register = () => {
                       value={formData.password}
                       onChange={handleChange}
                       required
+                      className="border-start-0 ps-0"
                     />
                   </CInputGroup>
 
                   <CInputGroup className="mb-4">
-                    <CInputGroupText>
+                    <CInputGroupText className="bg-white">
                       <CIcon icon={cilLockLocked} />
                     </CInputGroupText>
                     <CFormInput
@@ -146,13 +152,22 @@ const Register = () => {
                       value={formData.repeatPassword}
                       onChange={handleChange}
                       required
+                      className="border-start-0 ps-0"
                     />
                   </CInputGroup>
 
-                  <div className="d-grid">
-                    <CButton color="success" type="submit" disabled={loading}>
+                  <div className="d-grid mb-3">
+                    <CButton className="btn-premium" type="submit" disabled={loading}>
                       {loading ? <CSpinner size="sm" /> : 'Create Account'}
                     </CButton>
+                  </div>
+                  <div className="text-center text-muted">
+                    <small>
+                      Already have an account?{' '}
+                      <a href="/#/login" style={{ color: 'var(--primary-indigo)' }} className="text-decoration-none fw-bold">
+                        Log In
+                      </a>
+                    </small>
                   </div>
                 </CForm>
               </CCardBody>

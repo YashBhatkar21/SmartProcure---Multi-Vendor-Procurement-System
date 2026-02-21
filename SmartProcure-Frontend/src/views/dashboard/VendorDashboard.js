@@ -111,7 +111,7 @@ const VendorDashboard = () => {
         <>
             <CRow>
                 <CCol xs={12} lg={6}>
-                    <CCard className="mb-4">
+                    <CCard className="mb-4 hover-lift shadow-sm border-0">
                         <CCardHeader className="d-flex justify-content-between align-items-center">
                             <strong>Available Requests</strong>
                             <div className="d-flex justify-content-end gap-2">
@@ -164,7 +164,7 @@ const VendorDashboard = () => {
                 </CCol>
 
                 <CCol xs={12} lg={6}>
-                    <CCard className="mb-4">
+                    <CCard className="mb-4 hover-lift shadow-sm border-0">
                         <CCardHeader><strong>My Quotations</strong></CCardHeader>
                         <CCardBody>
                             <CTable hover responsive>
@@ -199,7 +199,7 @@ const VendorDashboard = () => {
 
             <CRow>
                 <CCol xs={12}>
-                    <CCard className="mb-4">
+                    <CCard className="mb-4 hover-lift shadow-sm border-0">
                         <CCardHeader className="d-flex justify-content-between align-items-center">
                             <strong>My Active Purchase Orders</strong>
                             <div className="d-flex justify-content-end gap-2">

@@ -138,8 +138,8 @@ const CustomerDashboard = () => {
                                 <CButton color="primary" size="sm" onClick={() => setCreateModalVisible(true)}>Create Request</CButton>
                             </div>
                         </CCardHeader>
-                        <CCardBody>
-                            <CTable hover responsive>
+                        <CCardBody className="p-4">
+                            <CTable hover striped responsive className="mb-0">
                                 <CTableHead>
                                     <CTableRow>
                                         <CTableHeaderCell>ID</CTableHeaderCell>
@@ -157,7 +157,13 @@ const CustomerDashboard = () => {
                                             <CTableDataCell>{req.title}</CTableDataCell>
                                             <CTableDataCell>${req.budget}</CTableDataCell>
                                             <CTableDataCell>
-                                                <CBadge color={req.status === 'OPEN' ? 'success' : 'secondary'}>{req.status}</CBadge>
+                                                <CBadge className="px-3 py-2 text-white" style={{
+                                                    backgroundColor: req.status === 'OPEN' ? 'var(--primary-indigo)' :
+                                                        req.status === 'COMPLETED' ? 'var(--success-emerald)' :
+                                                            req.status === 'CANCELLED' ? '#ef4444' : '#64748b'
+                                                }}>
+                                                    {req.status}
+                                                </CBadge>
                                             </CTableDataCell>
                                             <CTableDataCell>{new Date(req.dueDate).toLocaleDateString()}</CTableDataCell>
                                             <CTableDataCell>
@@ -193,8 +199,8 @@ const CustomerDashboard = () => {
                                 </select>
                             </div>
                         </CCardHeader>
-                        <CCardBody>
-                            <CTable hover responsive>
+                        <CCardBody className="p-4">
+                            <CTable hover striped responsive className="mb-0">
                                 <CTableHead>
                                     <CTableRow>
                                         <CTableHeaderCell>Order #</CTableHeaderCell>
@@ -213,7 +219,11 @@ const CustomerDashboard = () => {
                                             <CTableDataCell>{order.vendorName}</CTableDataCell>
                                             <CTableDataCell>${order.totalAmount}</CTableDataCell>
                                             <CTableDataCell>
-                                                <CBadge color={order.status === 'DELIVERED' ? 'success' : order.status === 'SHIPPED' ? 'info' : 'warning'}>
+                                                <CBadge className="px-3 py-2 text-white" style={{
+                                                    backgroundColor: order.status === 'DELIVERED' ? 'var(--success-emerald)' :
+                                                        order.status === 'SHIPPED' ? '#0ea5e9' :
+                                                            order.status === 'PROCESSING' ? '#f59e0b' : '#ef4444'
+                                                }}>
                                                     {order.status}
                                                 </CBadge>
                                             </CTableDataCell>

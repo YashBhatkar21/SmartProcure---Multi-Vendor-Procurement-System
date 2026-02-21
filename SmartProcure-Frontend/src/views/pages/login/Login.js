@@ -37,6 +37,9 @@ const Login = () => {
       if (response.data.role) {
         localStorage.setItem('role', response.data.role)
       }
+      if (response.data.fullName) {
+        localStorage.setItem('fullName', response.data.fullName)
+      }
       navigate('/dashboard', { replace: true })
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.')
@@ -54,8 +57,8 @@ const Login = () => {
               <CCardBody>
                 <CForm onSubmit={handleLogin}>
                   <div className="text-center mb-4">
-                    <h1 className="fw-bold" style={{ color: 'var(--primary-indigo)' }}>SmartProcure</h1>
-                    <p className="text-body-secondary mt-2">Sign in to your account</p>
+                    <h1 className="fw-bold" style={{ color: 'var(--primary-indigo)' }}>Welcome Back</h1>
+                    <p className="text-body-secondary mt-2">Sign In to your SmartProcure account</p>
                   </div>
                   {error && <CAlert color="danger">{error}</CAlert>}
                   <CInputGroup className="mb-3">

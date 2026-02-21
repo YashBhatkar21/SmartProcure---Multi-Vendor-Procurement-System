@@ -6,14 +6,16 @@ public class LoginResponse {
     private String accessToken;
     private long expiresInSeconds;
     private String role;
+    private String fullName;
 
     public LoginResponse() {
     }
 
-    public LoginResponse(String accessToken, long expiresInSeconds, String role) {
+    public LoginResponse(String accessToken, long expiresInSeconds, String role, String fullName) {
         this.accessToken = accessToken;
         this.expiresInSeconds = expiresInSeconds;
         this.role = role;
+        this.fullName = fullName;
     }
 
     public String getRole() {
@@ -22,6 +24,14 @@ public class LoginResponse {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getTokenType() {

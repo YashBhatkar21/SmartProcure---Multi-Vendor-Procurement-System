@@ -26,6 +26,9 @@ import CIcon from '@coreui/icons-react'
 const AppHeaderDropdown = () => {
   const navigate = useNavigate()
 
+  const fullName = localStorage.getItem('fullName') || 'User'
+  const role = localStorage.getItem('role') || 'UNKNOWN'
+
   const handleLogout = (e) => {
     e.preventDefault()
     localStorage.removeItem('token')
@@ -35,7 +38,11 @@ const AppHeaderDropdown = () => {
 
   return (
     <CDropdown variant="nav-item">
-      <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
+      <CDropdownToggle placement="bottom-end" className="py-0 pe-0 d-flex align-items-center" caret={false}>
+        <div className="d-none d-md-flex flex-column align-items-end me-3">
+          <span className="text-body fw-semibold" style={{ fontSize: '0.9rem' }}>{fullName}</span>
+          <span className="text-body-secondary small fw-bold" style={{ fontSize: '0.75rem' }}>{role}</span>
+        </div>
         <div className="avatar avatar-md bg-secondary text-white d-flex align-items-center justify-content-center rounded-circle">
           <CIcon icon={cilUser} />
         </div>

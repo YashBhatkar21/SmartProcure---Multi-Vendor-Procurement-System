@@ -70,7 +70,7 @@ public class AuthenticationService {
         saveUserToken(savedUser, jwtToken);
 
         long expiresInSeconds = accessTokenExpirationMinutes * 60;
-        return new LoginResponse(jwtToken, expiresInSeconds, role.getName().name());
+        return new LoginResponse(jwtToken, expiresInSeconds, role.getName().name(), savedUser.getFullName());
     }
 
     public LoginResponse authenticate(LoginRequest request) {
@@ -91,7 +91,7 @@ public class AuthenticationService {
         log.info("User authenticated successfully: {}", request.getEmail());
 
         long expiresInSeconds = accessTokenExpirationMinutes * 60;
-        return new LoginResponse(jwtToken, expiresInSeconds, user.getRole().getName().name());
+        return new LoginResponse(jwtToken, expiresInSeconds, user.getRole().getName().name(), user.getFullName());
     }
 
     private void saveUserToken(User user, String jwtToken) {

@@ -1,5 +1,4 @@
-@use "@coreui/coreui/scss/coreui" as * with ( 
-  $enable-deprecation-messages: false,
+@use "@coreui/coreui/scss/coreui" as * with ($enable-deprecation-messages: false,
 );
 @use "@coreui/chartjs/scss/coreui-chartjs";
 @use "vendors/simplebar";
@@ -15,7 +14,7 @@ body {
   @include transition(padding .15s);
 }
 
-.header > .container-fluid,
+.header>.container-fluid,
 .sidebar-header {
   min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
 }
@@ -48,7 +47,7 @@ body {
   }
 }
 
-.header > .container-fluid + .container-fluid {
+.header>.container-fluid+.container-fluid {
   min-height: 3rem;
 }
 
@@ -68,14 +67,15 @@ body {
 
 /* Premium UI Enhancements */
 :root {
-  --primary-indigo: #4f46e5;
-  --primary-indigo-hover: #4338ca;
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.4);
+  --primary-indigo: #1e3a8a;
+  --primary-indigo-hover: #1e40af;
+  --success-emerald: #059669;
+  --glass-bg: rgba(255, 255, 255, 0.90);
+  --glass-border: rgba(255, 255, 255, 0.5);
 }
 
 .auth-bg {
-  background: linear-gradient(-45deg, #4f46e5, #3b82f6, #0ea5e9, #6366f1);
+  background: linear-gradient(-45deg, #0f172a, #1e3a8a, #0284c7, #1e40af);
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
 }
@@ -84,9 +84,11 @@ body {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }

@@ -10,6 +10,7 @@ import {
   CSidebarToggler,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import { cilIndustry } from '@coreui/icons'
 
 import { AppSidebarNav } from './AppSidebarNav'
 
@@ -36,8 +37,9 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarHeader className="border-bottom">
-        <CSidebarBrand to="/" className="text-decoration-none d-flex align-items-center justify-content-center">
-          <h4 className="m-0 text-white fw-bold">SmartProcure</h4>
+        <CSidebarBrand to="/" className="text-decoration-none d-flex align-items-center justify-content-center py-3">
+          <CIcon icon={cilIndustry} size="xl" className="text-white me-2" />
+          <h4 className="m-0 text-white fw-bold tracking-tight">SmartProcure</h4>
         </CSidebarBrand>
         <CCloseButton
           className="d-lg-none"

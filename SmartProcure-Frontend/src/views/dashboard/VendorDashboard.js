@@ -124,8 +124,8 @@ const VendorDashboard = () => {
                                 </select>
                             </div>
                         </CCardHeader>
-                        <CCardBody>
-                            <CTable hover responsive>
+                        <CCardBody className="p-4">
+                            <CTable hover striped responsive className="mb-0">
                                 <CTableHead>
                                     <CTableRow>
                                         <CTableHeaderCell>Title</CTableHeaderCell>
@@ -144,9 +144,9 @@ const VendorDashboard = () => {
                                                 <CTableDataCell>{new Date(req.dueDate).toLocaleDateString()}</CTableDataCell>
                                                 <CTableDataCell>
                                                     {hasQuoted ? (
-                                                        <CBadge color="success">Quoted</CBadge>
+                                                        <CBadge className="px-3 py-2" color="secondary">Quoted</CBadge>
                                                     ) : (
-                                                        <CButton color="primary" size="sm" onClick={() => handleOpenQuoteModal(req)}>
+                                                        <CButton className="btn-premium" size="sm" onClick={() => handleOpenQuoteModal(req)}>
                                                             Quote
                                                         </CButton>
                                                     )}
@@ -166,8 +166,8 @@ const VendorDashboard = () => {
                 <CCol xs={12} lg={6}>
                     <CCard className="mb-4 hover-lift shadow-sm border-0">
                         <CCardHeader><strong>My Quotations</strong></CCardHeader>
-                        <CCardBody>
-                            <CTable hover responsive>
+                        <CCardBody className="p-4">
+                            <CTable hover striped responsive className="mb-0">
                                 <CTableHead>
                                     <CTableRow>
                                         <CTableHeaderCell>Request ID</CTableHeaderCell>
@@ -181,7 +181,10 @@ const VendorDashboard = () => {
                                             <CTableDataCell>{quote.requestId}</CTableDataCell>
                                             <CTableDataCell>${quote.quotedAmount}</CTableDataCell>
                                             <CTableDataCell>
-                                                <CBadge color={quote.status === 'ACCEPTED' ? 'success' : quote.status === 'REJECTED' ? 'danger' : 'secondary'}>
+                                                <CBadge className="px-3 py-2 text-white" style={{
+                                                    backgroundColor: quote.status === 'ACCEPTED' ? 'var(--success-emerald)' :
+                                                        quote.status === 'REJECTED' ? '#ef4444' : '#64748b'
+                                                }}>
                                                     {quote.status}
                                                 </CBadge>
                                             </CTableDataCell>
@@ -213,8 +216,8 @@ const VendorDashboard = () => {
                                 </select>
                             </div>
                         </CCardHeader>
-                        <CCardBody>
-                            <CTable hover responsive>
+                        <CCardBody className="p-4">
+                            <CTable hover striped responsive className="mb-0">
                                 <CTableHead>
                                     <CTableRow>
                                         <CTableHeaderCell>Order #</CTableHeaderCell>
@@ -234,7 +237,11 @@ const VendorDashboard = () => {
                                             <CTableDataCell>{order.customerName}</CTableDataCell>
                                             <CTableDataCell>${order.totalAmount}</CTableDataCell>
                                             <CTableDataCell>
-                                                <CBadge color={order.status === 'DELIVERED' ? 'success' : order.status === 'SHIPPED' ? 'info' : 'warning'}>
+                                                <CBadge className="px-3 py-2 text-white" style={{
+                                                    backgroundColor: order.status === 'DELIVERED' ? 'var(--success-emerald)' :
+                                                        order.status === 'SHIPPED' ? '#0ea5e9' :
+                                                            order.status === 'PROCESSING' ? '#f59e0b' : '#ef4444'
+                                                }}>
                                                     {order.status}
                                                 </CBadge>
                                             </CTableDataCell>

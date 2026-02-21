@@ -95,7 +95,9 @@ const Register = () => {
                   </CInputGroup>
 
                   <CInputGroup className="mb-3">
-                    <CInputGroupText className="bg-white">@</CInputGroupText>
+                    <CInputGroupText className="bg-white">
+                      <CIcon icon={cilUser} />
+                    </CInputGroupText>
                     <CFormInput
                       type="email"
                       placeholder="Email"

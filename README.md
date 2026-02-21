@@ -67,13 +67,18 @@ Global JWT interceptor
 CoreUI-based dashboard layout (customized)
 
 📂 Project Structure
+
 SmartProcure/
+
 │
 ├── src/               # Spring Boot application
+
 │
 ├── SmartProcure-Frontend/ # React frontend (Port 3000)
+
 │
 └── README.md
+
 🗄 Database
 
 Database name:
@@ -128,6 +133,7 @@ datasource:
 url: jdbc:mysql://localhost:3306/smartprocure_db
 username: root
 password: yourpassword
+
 2️⃣ Run Backend (Port 8081)
 
 From backend folder:
@@ -145,6 +151,7 @@ http://localhost:8081/api/health
 Swagger UI:
 
 http://localhost:8081/swagger-ui.html
+
 3️⃣ Run Frontend (Port 3000)
 
 From frontend folder:
@@ -155,6 +162,7 @@ npm start
 Frontend will run at:
 
 http://localhost:3000
+
 🔄 Authentication Flow
 
 User logs in via /api/auth/login
@@ -170,7 +178,8 @@ Axios attaches token to every request
 Global interceptor handles 401 (auto logout)
 
 📊 Implemented Features
-Backend
+
+**Backend**
 
 User Registration & Login
 
@@ -190,7 +199,7 @@ Swagger Documentation
 
 Pagination & Filtering (where applicable)
 
-Frontend
+**Frontend**
 
 Role-based dashboards
 
@@ -206,14 +215,6 @@ Login & Registration pages
 
 Dynamic sidebar rendering
 
-🧪 Test Accounts (Seed Data)
-Role	Email	Password
-ADMIN	admin@smartprocure.com
-password
-CUSTOMER	customer@smartprocure.com
-password
-VENDOR	vendor@smartprocure.com
-password
 🎯 Future Improvements
 
 Refresh Token implementation

@@ -46,6 +46,17 @@ public class AdminController {
                                 .map(this::mapToDTO));
         }
 
+        @org.springframework.web.bind.annotation.DeleteMapping("/users/{id}")
+        @PreAuthorize("hasRole('ADMIN')")
+        @org.springframework.transaction.annotation.Transactional
+        public ResponseEntity<Void> deleteUser(@org.springframework.web.bind.annotation.PathVariable Long id) {
+                if (!userRepository.existsById(id)) {
+                        return ResponseEntity.notFound().build();
+                }
+                userRepository.deleteById(id);
+                return ResponseEntity.noContent().build();
+        }
+
         private UserDTO mapToDTO(User user) {
                 VendorDTO vendorDTO = null;
                 if (user.getRole() != null && "VENDOR".equals(user.getRole().getName().name())

@@ -16,13 +16,10 @@ import java.time.Instant;
  * Payment against an order. Many-to-One with Order.
  */
 @Entity
-@Table(
-    name = "payments",
-    indexes = {
+@Table(name = "payments", indexes = {
         @jakarta.persistence.Index(name = "idx_payments_order_id", columnList = "order_id"),
         @jakarta.persistence.Index(name = "idx_payments_status", columnList = "status")
-    }
-)
+})
 public class Payment extends BaseEntity {
 
     @Column(name = "amount", nullable = false, precision = 19, scale = 2)
@@ -31,8 +28,8 @@ public class Payment extends BaseEntity {
     @Column(name = "payment_method", length = 50)
     private String paymentMethod;
 
-    @Column(name = "transaction_reference", length = 255)
-    private String transactionReference;
+    @Column(name = "transaction_id", unique = true, length = 255)
+    private String transactionId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 50)
@@ -61,12 +58,12 @@ public class Payment extends BaseEntity {
         this.paymentMethod = paymentMethod;
     }
 
-    public String getTransactionReference() {
-        return transactionReference;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public void setTransactionReference(String transactionReference) {
-        this.transactionReference = transactionReference;
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 
     public PaymentStatus getStatus() {

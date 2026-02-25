@@ -5,6 +5,6 @@ package com.smartprocure.entity;
  */
 public enum PaymentStatus {
     PENDING,
-    PAID,
+    SUCCESS,
     FAILED
 }

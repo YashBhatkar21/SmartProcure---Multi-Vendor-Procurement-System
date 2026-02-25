@@ -20,9 +20,11 @@ import {
     CModalFooter,
     CModalHeader,
     CModalTitle,
-    CBadge
+    CBadge,
+    CSpinner
 } from '@coreui/react'
 import { getMyRequests, createRequest, getQuotationsForRequest, acceptQuotation, getCustomerOrders } from '../../api/procurement'
+import { initiatePayment, confirmPayment, getCustomerPayments } from '../../api/payment'
 
 const CustomerDashboard = () => {
     const [requests, setRequests] = useState([])
@@ -31,7 +33,14 @@ const CustomerDashboard = () => {
     const [activeRequest, setActiveRequest] = useState(null)
     const [quotations, setQuotations] = useState([])
     const [orders, setOrders] = useState([])
+    const [payments, setPayments] = useState([])
     const [newRequest, setNewRequest] = useState({ title: '', description: '', budget: '', dueDate: '' })
+
+    // Payment Modal State
+    const [paymentModalVisible, setPaymentModalVisible] = useState(false)
+    const [activePaymentOrder, setActivePaymentOrder] = useState(null)
+    const [activeTransaction, setActiveTransaction] = useState(null)
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false)
 
     // Filters for Requests
     const [requestSearch, setRequestSearch] = useState('');
@@ -67,6 +76,15 @@ const CustomerDashboard = () => {
         }
     }
 
+    const fetchPayments = async () => {
+        try {
+            const { data } = await getCustomerPayments();
+            setPayments(data);
+        } catch (error) {
+            console.error('Error fetching payments', error);
+        }
+    }
+
     useEffect(() => {
         fetchRequests()
     }, [requestSearch, requestStatus])
@@ -74,6 +92,10 @@ const CustomerDashboard = () => {
     useEffect(() => {
         fetchOrders()
     }, [orderSearch, orderStatus])
+
+    useEffect(() => {
+        fetchPayments()
+    }, [])
 
     const handleCreateRequest = async (e) => {
         e.preventDefault();
@@ -116,6 +138,34 @@ const CustomerDashboard = () => {
         } catch (error) {
             console.error(error);
             alert('Failed to accept quotation.');
+        }
+    }
+
+    const handleInitiatePayment = async (order) => {
+        try {
+            const { data } = await initiatePayment(order.id, 'CARD');
+            setActivePaymentOrder(order);
+            setActiveTransaction(data);
+            setPaymentModalVisible(true);
+        } catch (error) {
+            console.error('Error initiating payment', error);
+            alert(error.response?.data?.message || 'Failed to initiate payment.');
+        }
+    }
+
+    const handleConfirmPayment = async (isSuccess) => {
+        setIsProcessingPayment(true);
+        try {
+            await confirmPayment(activeTransaction.transactionId, isSuccess, 'CARD');
+            alert(isSuccess ? 'Payment Successful!' : 'Payment Failed.');
+            setPaymentModalVisible(false);
+            fetchOrders();
+            fetchPayments();
+        } catch (error) {
+            console.error('Error confirming payment', error);
+            alert('An error occurred during payment processing.');
+        } finally {
+            setIsProcessingPayment(false);
         }
     }
 
@@ -209,6 +259,7 @@ const CustomerDashboard = () => {
                                         <CTableHeaderCell>Total Amount</CTableHeaderCell>
                                         <CTableHeaderCell>Status</CTableHeaderCell>
                                         <CTableHeaderCell>Created At</CTableHeaderCell>
+                                        <CTableHeaderCell>Action</CTableHeaderCell>
                                     </CTableRow>
                                 </CTableHead>
                                 <CTableBody>
@@ -222,16 +273,74 @@ const CustomerDashboard = () => {
                                                 <CBadge className="px-3 py-2 text-white" style={{
                                                     backgroundColor: order.status === 'DELIVERED' ? 'var(--success-emerald)' :
                                                         order.status === 'SHIPPED' ? '#0ea5e9' :
-                                                            order.status === 'PROCESSING' ? '#f59e0b' : '#ef4444'
+                                                            order.status === 'PROCESSING' ? '#f59e0b' :
+                                                                order.status === 'COMPLETED' ? '#10b981' : '#ef4444'
                                                 }}>
                                                     {order.status}
                                                 </CBadge>
                                             </CTableDataCell>
                                             <CTableDataCell>{new Date(order.createdAt).toLocaleDateString()}</CTableDataCell>
+                                            <CTableDataCell>
+                                                {order.status !== 'COMPLETED' ? (
+                                                    <CButton color="success" className="text-white" size="sm" onClick={() => handleInitiatePayment(order)}>
+                                                        Pay Now
+                                                    </CButton>
+                                                ) : (
+                                                    <CBadge color="success">Paid</CBadge>
+                                                )}
+                                            </CTableDataCell>
                                         </CTableRow>
                                     ))}
                                     {orders.length === 0 && (
                                         <CTableRow><CTableDataCell colSpan="6" className="text-center">No active orders yet.</CTableDataCell></CTableRow>
+                                    )}
+                                </CTableBody>
+                            </CTable>
+                        </CCardBody>
+                    </CCard>
+                </CCol>
+            </CRow>
+
+            <CRow>
+                <CCol xs={12}>
+                    <CCard className="mb-4 hover-lift shadow-sm border-0">
+                        <CCardHeader>
+                            <strong>My Payment History</strong>
+                        </CCardHeader>
+                        <CCardBody className="p-4">
+                            <CTable hover striped responsive className="mb-0">
+                                <CTableHead>
+                                    <CTableRow>
+                                        <CTableHeaderCell>Transaction ID</CTableHeaderCell>
+                                        <CTableHeaderCell>Order #</CTableHeaderCell>
+                                        <CTableHeaderCell>Amount</CTableHeaderCell>
+                                        <CTableHeaderCell>Method</CTableHeaderCell>
+                                        <CTableHeaderCell>Status</CTableHeaderCell>
+                                        <CTableHeaderCell>Date</CTableHeaderCell>
+                                    </CTableRow>
+                                </CTableHead>
+                                <CTableBody>
+                                    {payments.map((payment) => (
+                                        <CTableRow key={payment.id}>
+                                            <CTableDataCell>
+                                                <code className="text-secondary">{payment.transactionId}</code>
+                                            </CTableDataCell>
+                                            <CTableDataCell>{payment.orderNumber}</CTableDataCell>
+                                            <CTableDataCell><strong>${payment.amount}</strong></CTableDataCell>
+                                            <CTableDataCell>{payment.paymentMethod || 'N/A'}</CTableDataCell>
+                                            <CTableDataCell>
+                                                <CBadge className="px-3 py-2 text-white" style={{
+                                                    backgroundColor: payment.status === 'SUCCESS' ? 'var(--success-emerald)' :
+                                                        payment.status === 'PENDING' ? '#f59e0b' : '#ef4444'
+                                                }}>
+                                                    {payment.status}
+                                                </CBadge>
+                                            </CTableDataCell>
+                                            <CTableDataCell>{payment.paidAt ? new Date(payment.paidAt).toLocaleString() : 'N/A'}</CTableDataCell>
+                                        </CTableRow>
+                                    ))}
+                                    {payments.length === 0 && (
+                                        <CTableRow><CTableDataCell colSpan="6" className="text-center">No payment history.</CTableDataCell></CTableRow>
                                     )}
                                 </CTableBody>
                             </CTable>
@@ -304,6 +413,75 @@ const CustomerDashboard = () => {
                 </CModalBody>
                 <CModalFooter>
                     <CButton color="secondary" onClick={() => setQuotationsModalVisible(false)}>Close</CButton>
+                </CModalFooter>
+            </CModal>
+
+            {/* Payment Modal (Simulated Gateway) */}
+            <CModal visible={paymentModalVisible} onClose={() => !isProcessingPayment && setPaymentModalVisible(false)} alignment="center" backdrop="static">
+                <CModalHeader>
+                    <CModalTitle>Secure Checkout</CModalTitle>
+                </CModalHeader>
+                <CModalBody>
+                    {activeTransaction && activePaymentOrder ? (
+                        <>
+                            <div className="text-center mb-4">
+                                <h4>Payment Details</h4>
+                                <p className="text-muted mb-0">You are about to pay</p>
+                                <h2 className="text-primary mb-3">${activeTransaction.amount}</h2>
+                            </div>
+
+                            <table className="table table-borderless table-sm mb-4">
+                                <tbody>
+                                    <tr>
+                                        <td className="text-muted">Order #</td>
+                                        <td className="text-end fw-bold">{activePaymentOrder.orderNumber}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="text-muted">Vendor</td>
+                                        <td className="text-end fw-bold">{activePaymentOrder.vendorName}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="text-muted">Requested Item</td>
+                                        <td className="text-end">{activePaymentOrder.requestTitle}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="text-muted">Transaction ID</td>
+                                        <td className="text-end"><code className="bg-light p-1 rounded text-lowercase">{activeTransaction.transactionId}</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div className="alert alert-info py-2" role="alert">
+                                <small>This is a simulated payment gateway. In a real environment, you would be redirected to a provider like Stripe or PayPal.</small>
+                            </div>
+                        </>
+                    ) : <CSpinner />}
+                </CModalBody>
+                <CModalFooter className="justify-content-center">
+                    <CButton
+                        color="success"
+                        className="text-white w-100 mb-2 py-2 fw-bold"
+                        onClick={() => handleConfirmPayment(true)}
+                        disabled={isProcessingPayment}
+                    >
+                        {isProcessingPayment ? <><CSpinner size="sm" /> Processing...</> : 'Simulate Successful Payment'}
+                    </CButton>
+                    <CButton
+                        color="danger"
+                        className="text-white w-100 py-2 fw-bold"
+                        onClick={() => handleConfirmPayment(false)}
+                        disabled={isProcessingPayment}
+                    >
+                        {isProcessingPayment ? <><CSpinner size="sm" /> Processing...</> : 'Simulate Failed Payment'}
+                    </CButton>
+                    <CButton
+                        color="light"
+                        className="w-100 mt-2"
+                        onClick={() => setPaymentModalVisible(false)}
+                        disabled={isProcessingPayment}
+                    >
+                        Cancel
+                    </CButton>
                 </CModalFooter>
             </CModal>
         </>

@@ -24,14 +24,22 @@ import {
     CDropdown,
     CDropdownToggle,
     CDropdownMenu,
-    CDropdownItem
+    CDropdownItem,
+    CWidgetStatsC,
+    CSpinner,
+    CButtonToolbar
 } from '@coreui/react'
+import { CChartLine } from '@coreui/react-chartjs'
+import CIcon from '@coreui/icons-react'
+import { cilMoney, cilCart, cilGraph, cilCheckCircle } from '@coreui/icons'
 import { getAvailableRequests, getMyQuotations, submitQuotation, getVendorOrders, updateOrderStatus } from '../../api/procurement'
+import { getVendorDashboardStats } from '../../api/dashboard'
 
 const VendorDashboard = () => {
     const [availableRequests, setAvailableRequests] = useState([])
     const [myQuotations, setMyQuotations] = useState([])
     const [orders, setOrders] = useState([])
+    const [stats, setStats] = useState(null)
     const [quoteModalVisible, setQuoteModalVisible] = useState(false)
     const [activeRequest, setActiveRequest] = useState(null)
     const [newQuote, setNewQuote] = useState({ quotedAmount: '', terms: '', validUntil: '' })
@@ -54,14 +62,16 @@ const VendorDashboard = () => {
             if (orderSearch) orderParams.search = orderSearch;
             if (orderStatus) orderParams.status = orderStatus;
 
-            const [requestsRes, quotesRes, ordersRes] = await Promise.all([
+            const [requestsRes, quotesRes, ordersRes, statsRes] = await Promise.all([
                 getAvailableRequests(reqParams),
                 getMyQuotations(),
-                getVendorOrders(orderParams)
+                getVendorOrders(orderParams),
+                getVendorDashboardStats()
             ]);
             setAvailableRequests(requestsRes.data.content || requestsRes.data);
             setMyQuotations(quotesRes.data);
             setOrders(ordersRes.data.content || ordersRes.data);
+            setStats(statsRes.data);
         } catch (error) {
             console.error('Error fetching data', error);
         }
@@ -109,6 +119,89 @@ const VendorDashboard = () => {
 
     return (
         <>
+            {/* Vendor Analytics Section */}
+            {stats ? (
+                <>
+                    <CRow className="mb-4">
+                        <CCol xs={12} sm={6} lg={3}>
+                            <CWidgetStatsC
+                                className="mb-3 hover-lift h-100"
+                                icon={<CIcon icon={cilMoney} height={36} />}
+                                color="success"
+                                inverse
+                                progress={{ value: 100 }}
+                                text="Total Revenue Generated"
+                                title="Revenue"
+                                value={`$${stats.totalRevenueGenerated || 0}`}
+                            />
+                        </CCol>
+                        <CCol xs={12} sm={6} lg={3}>
+                            <CWidgetStatsC
+                                className="mb-3 hover-lift h-100"
+                                icon={<CIcon icon={cilCart} height={36} />}
+                                color="info"
+                                inverse
+                                progress={{ value: 100 }}
+                                text="Orders Completed"
+                                title="Completed"
+                                value={stats.ordersCompleted || 0}
+                            />
+                        </CCol>
+                        <CCol xs={12} sm={6} lg={3}>
+                            <CWidgetStatsC
+                                className="mb-3 hover-lift h-100"
+                                icon={<CIcon icon={cilGraph} height={36} />}
+                                color="warning"
+                                inverse
+                                progress={{ value: 100 }}
+                                text="Pending Payments from system"
+                                title="Pending Payments"
+                                value={`$${stats.pendingPayments || 0}`}
+                            />
+                        </CCol>
+                        <CCol xs={12} sm={6} lg={3}>
+                            <CWidgetStatsC
+                                className="mb-3 hover-lift h-100"
+                                icon={<CIcon icon={cilCheckCircle} height={36} />}
+                                color="primary"
+                                inverse
+                                progress={{ value: stats.performanceScore || 0 }}
+                                text="Conversion rate (Orders / Quotes)"
+                                title="Performance Score"
+                                value={`${stats.performanceScore || 0}%`}
+                            />
+                        </CCol>
+                    </CRow>
+                    <CRow className="mb-4">
+                        <CCol xs={12}>
+                            <CCard className="shadow-sm border-0">
+                                <CCardHeader><strong>Monthly Revenue Trend</strong></CCardHeader>
+                                <CCardBody>
+                                    <CChartLine
+                                        data={{
+                                            labels: stats.monthlyRevenue?.map(m => m.label) || [],
+                                            datasets: [
+                                                {
+                                                    label: 'Revenue',
+                                                    backgroundColor: 'rgba(50, 31, 219, 0.2)',
+                                                    borderColor: '#321fdb',
+                                                    pointBackgroundColor: '#321fdb',
+                                                    pointBorderColor: '#fff',
+                                                    data: stats.monthlyRevenue?.map(m => m.value) || [],
+                                                    fill: true,
+                                                },
+                                            ],
+                                        }}
+                                        options={{ maintainAspectRatio: false, plugins: { legend: { display: false } } }}
+                                        style={{ height: '300px' }}
+                                    />
+                                </CCardBody>
+                            </CCard>
+                        </CCol>
+                    </CRow>
+                </>
+            ) : <CSpinner className="mb-4 d-block mx-auto" />}
+
             <CRow>
                 <CCol xs={12} lg={6}>
                     <CCard className="mb-4 hover-lift shadow-sm border-0">
@@ -267,6 +360,57 @@ const VendorDashboard = () => {
                     </CCard>
                 </CCol>
             </CRow>
+
+            {/* Payments Render Section */}
+            {stats && stats.recentPaymentsReceived && (
+                <CRow>
+                    <CCol xs={12}>
+                        <CCard className="mb-4 hover-lift shadow-sm border-0">
+                            <CCardHeader>
+                                <strong>Recent Payments Received</strong>
+                            </CCardHeader>
+                            <CCardBody className="p-4">
+                                <CTable hover striped responsive className="mb-0">
+                                    <CTableHead>
+                                        <CTableRow>
+                                            <CTableHeaderCell>Transaction ID</CTableHeaderCell>
+                                            <CTableHeaderCell>Order #</CTableHeaderCell>
+                                            <CTableHeaderCell>Amount</CTableHeaderCell>
+                                            <CTableHeaderCell>Method</CTableHeaderCell>
+                                            <CTableHeaderCell>Status</CTableHeaderCell>
+                                            <CTableHeaderCell>Date</CTableHeaderCell>
+                                        </CTableRow>
+                                    </CTableHead>
+                                    <CTableBody>
+                                        {stats.recentPaymentsReceived.map((payment) => (
+                                            <CTableRow key={payment.id}>
+                                                <CTableDataCell>
+                                                    <code className="text-secondary">{payment.transactionId}</code>
+                                                </CTableDataCell>
+                                                <CTableDataCell>{payment.orderNumber}</CTableDataCell>
+                                                <CTableDataCell><strong>${payment.amount}</strong></CTableDataCell>
+                                                <CTableDataCell>{payment.paymentMethod || 'N/A'}</CTableDataCell>
+                                                <CTableDataCell>
+                                                    <CBadge className="px-3 py-2 text-white" style={{
+                                                        backgroundColor: payment.status === 'SUCCESS' ? 'var(--success-emerald)' :
+                                                            payment.status === 'PENDING' ? '#f59e0b' : '#ef4444'
+                                                    }}>
+                                                        {payment.status}
+                                                    </CBadge>
+                                                </CTableDataCell>
+                                                <CTableDataCell>{payment.paidAt ? new Date(payment.paidAt).toLocaleString() : 'N/A'}</CTableDataCell>
+                                            </CTableRow>
+                                        ))}
+                                        {stats.recentPaymentsReceived.length === 0 && (
+                                            <CTableRow><CTableDataCell colSpan="6" className="text-center">No payments received yet.</CTableDataCell></CTableRow>
+                                        )}
+                                    </CTableBody>
+                                </CTable>
+                            </CCardBody>
+                        </CCard>
+                    </CCol>
+                </CRow>
+            )}
 
             {/* Quote Modal */}
             <CModal visible={quoteModalVisible} onClose={() => setQuoteModalVisible(false)}>
